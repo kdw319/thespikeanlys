@@ -696,20 +696,12 @@
         // ==========================================
         // AI BM Generator
         // ==========================================
-        // GAS Proxy URL (키는 GAS Script Properties에 저장, 코드에 노출 없음)
-        const GAS_URL = localStorage.getItem('spike_gas_url') || '';
+        // GAS Proxy URL (API 키는 GAS 서버에만 존재, 이 URL은 공개해도 안전)
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwD3wfJQ153cNNmzq1Zh3NFKgsKMBMMKBaZshBN0x8v7Fs8UmdQ9_N6WJcpGee1W3Sy/exec';
 
         async function generateAIBM() {
             const price = parseFloat(document.getElementById('bm-price').value);
             if (!price || price <= 0) { alert("목표 판매가를 정확히 입력해주세요."); return; }
-
-            if (!GAS_URL) {
-                const url = prompt("GAS Web App URL을 입력해주세요.\n(gas-proxy.js 배포 후 발급되는 URL)");
-                if (!url) return;
-                localStorage.setItem('spike_gas_url', url);
-                location.reload();
-                return;
-            }
 
             const vpoint    = parseFloat(document.getElementById('bm-vpoint').value)    || 0;
             const bflame    = parseFloat(document.getElementById('bm-bflame').value)    || 0;
