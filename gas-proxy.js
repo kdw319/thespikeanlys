@@ -1,5 +1,5 @@
 /**
- * Project ESOL - Gemini API Proxy
+ * 더 스파이크 분석 - Gemini API Proxy
  * Google Apps Script Web App
  *
  * 배포 방법:
@@ -47,7 +47,7 @@ function doPost(e) {
 
 // 헬스체크용 (브라우저에서 URL 직접 열면 동작 확인 가능)
 function doGet(e) {
-  return jsonResponse({ status: 'ok', message: 'Project ESOL Proxy is running.' });
+  return jsonResponse({ status: 'ok', message: '더 스파이크 분석 Proxy is running.' });
 }
 
 function jsonResponse(obj) {
