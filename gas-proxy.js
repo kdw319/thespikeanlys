@@ -38,20 +38,18 @@ function doPost(e) {
 
     return ContentService
       .createTextOutput(geminiRes.getContentText())
-      .setMimeType(ContentService.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.TEXT);
 
   } catch (err) {
-    return jsonResponse({ error: err.message }, 500);
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: err.message }))
+      .setMimeType(ContentService.MimeType.TEXT);
   }
 }
 
 // 헬스체크용 (브라우저에서 URL 직접 열면 동작 확인 가능)
 function doGet(e) {
-  return jsonResponse({ status: 'ok', message: '더 스파이크 분석 Proxy is running.' });
-}
-
-function jsonResponse(obj) {
   return ContentService
-    .createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
+    .createTextOutput(JSON.stringify({ status: 'ok', message: '더 스파이크 분석 Proxy is running.' }))
+    .setMimeType(ContentService.MimeType.TEXT);
 }
