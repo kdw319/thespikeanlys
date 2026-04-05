@@ -162,6 +162,38 @@
                         </ul>
                     </div>
                 </div>
+
+                <div class="glass-card rounded-2xl p-6 shadow-xl mb-6">
+                    <h3 class="text-xl font-bold mb-4 flex items-center"><i data-lucide="swords" class="w-5 h-5 mr-2 text-rose-400"></i>주요 경쟁작 현황 추정치</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[600px]">
+                            <thead>
+                                <tr class="border-b border-slate-700 bg-slate-800/50">
+                                    <th class="py-3 px-4 text-slate-300 font-medium rounded-tl-lg">분류 / 게임명</th>
+                                    <th class="py-3 px-4 text-slate-300 font-medium">DAU / 매출 추정치</th>
+                                    <th class="py-3 px-4 text-slate-300 font-medium rounded-tr-lg">BM 특징</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-slate-800 hover:bg-slate-800/30 transition-colors">
+                                    <td class="py-4 px-4"><span class="block text-[10px] text-amber-400 mb-1">캐주얼 스포츠 (Miniclip)</span><span class="font-bold text-white">Volleyball Arena</span></td>
+                                    <td class="py-4 px-4 text-sm text-slate-300">DAU 30만~40만<br><span class="text-emerald-400 text-xs">광고 수익 위주</span></td>
+                                    <td class="py-4 px-4 text-sm text-slate-400">트래픽 볼륨 기반 강제/보상형 광고 집중. 인앱 결제 극소.</td>
+                                </tr>
+                                <tr class="border-b border-slate-800 hover:bg-slate-800/30 transition-colors">
+                                    <td class="py-4 px-4"><span class="block text-[10px] text-blue-400 mb-1">PC 인디 패키지 (Steam)</span><span class="font-bold text-white">Spikair Volleyball</span></td>
+                                    <td class="py-4 px-4 text-sm text-slate-300">누적 판매 약 6만 장<br><span class="text-emerald-400 text-xs">총 매출 약 10억 원</span></td>
+                                    <td class="py-4 px-4 text-sm text-slate-400">초기 패키지 판매가 끝. 현재 DAU 극도로 낮음. 라이브 BM 부재.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/30 transition-colors">
+                                    <td class="py-4 px-4"><span class="block text-[10px] text-rose-400 mb-1">수집형 모바일 (IP)</span><span class="font-bold text-white">하이큐!! FLY HIGH</span></td>
+                                    <td class="py-4 px-4 text-sm text-slate-300">진성 MAU 1만~3만<br><span class="text-emerald-400 text-xs">월 5~10억 원 (안정기)</span></td>
+                                    <td class="py-4 px-4 text-sm text-slate-400">강력한 팬덤 기반. 높은 ARPU의 가챠(확률형 아이템) 의존.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </section>
 
             <!-- SECTION 2: MONETIZATION (BM) -->
@@ -697,7 +729,7 @@
         // AI BM Generator
         // ==========================================
         // GAS Proxy URL (API 키는 GAS 서버에만 존재, 이 URL은 공개해도 안전)
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwD3wfJQ153cNNmzq1Zh3NFKgsKMBMMKBaZshBN0x8v7Fs8UmdQ9_N6WJcpGee1W3Sy/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbxSZ6omJOgTMFLAFQ6fAzRnfXcRUxz2pUiwY7WGrpx4-ei_QRkDhFahTNdiEv2YOst7/exec';
 
         async function generateAIBM() {
             const price = parseFloat(document.getElementById('bm-price').value);
