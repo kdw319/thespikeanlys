@@ -41,6 +41,9 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .map-node { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; z-index: 10; transition: all 0.5s ease; }
+        .pulse-ring { position: absolute; width: 100%; height: 100%; border-radius: 9999px; animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite; z-index: -1; }
+        @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
     </style>
 </head>
 <body class="antialiased h-screen flex overflow-hidden">
@@ -58,6 +61,15 @@
                 <li>
                     <button data-target="dashboard" class="nav-btn w-full flex items-center px-6 py-3 text-sm font-bold nav-active transition-colors">
                         <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> 대시보드 요약
+                    </button>
+                </li>
+                <li>
+                    <button data-target="market-map" class="nav-btn w-full flex items-center px-6 py-3 text-sm font-bold nav-inactive transition-colors relative">
+                        <i data-lucide="map" class="w-5 h-5 mr-3"></i> 배구 시장 활성화 맵
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                        </span>
                     </button>
                 </li>
                 <li>
@@ -97,6 +109,7 @@
     <!-- Mobile Header -->
     <div class="md:hidden fixed top-0 w-full bg-slate-900 border-b border-slate-800 z-20 flex overflow-x-auto">
         <button data-target="dashboard" class="nav-btn flex-shrink-0 px-4 py-3 text-sm font-bold nav-active border-b-2 border-l-0">대시보드</button>
+        <button data-target="market-map" class="nav-btn flex-shrink-0 px-4 py-3 text-sm font-bold nav-inactive border-b-2 border-l-0 text-rose-400">시장 맵</button>
         <button data-target="monetization" class="nav-btn flex-shrink-0 px-4 py-3 text-sm font-bold nav-inactive border-b-2 border-l-0">수익화(BM)</button>
         <button data-target="efficiency" class="nav-btn flex-shrink-0 px-4 py-3 text-sm font-bold nav-inactive border-b-2 border-l-0 text-emerald-400">BM 효율</button>
         <button data-target="global" class="nav-btn flex-shrink-0 px-4 py-3 text-sm font-bold nav-inactive border-b-2 border-l-0">글로벌 타겟팅</button>
@@ -191,6 +204,64 @@
                                     <td class="py-4 px-4 text-sm text-slate-400">강력한 팬덤 기반. 높은 ARPU의 가챠(확률형 아이템) 의존.</td>
                                 </tr>
                             </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 1.5: MARKET MAP -->
+            <section id="market-map" class="section-content">
+                <header class="mb-8">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between">
+                        <div>
+                            <div class="inline-flex items-center space-x-2 bg-rose-500/10 border border-rose-500/30 px-3 py-1 rounded-full mb-3">
+                                <i data-lucide="radar" class="w-4 h-4 text-rose-400"></i>
+                                <span class="text-xs text-rose-300 font-bold">Global Volleyball Heatmap</span>
+                            </div>
+                            <h2 class="text-3xl font-black text-white mb-2">글로벌 배구 시장 활성화 맵</h2>
+                            <p class="text-slate-400">성별 프로 리그의 자본력(Revenue) 및 팬덤(Volume) 기반 핵심 마켓 시각화</p>
+                        </div>
+                        <div class="mt-4 md:mt-0 bg-slate-800 p-1 rounded-xl inline-flex border border-slate-700 shadow-inner self-start">
+                            <button id="btn-mens" class="px-6 py-2 rounded-lg text-sm font-bold transition-all bg-rose-600 text-white shadow-md" onclick="switchLeague('mens')">남자 배구</button>
+                            <button id="btn-womens" class="px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-400 hover:text-white" onclick="switchLeague('womens')">여자 배구</button>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="glass-card rounded-2xl p-6 shadow-xl mb-8 border-t-4 border-t-rose-500">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i data-lucide="globe" class="w-5 h-5 mr-2 text-rose-400"></i>
+                        <span id="map-title-text">남자 배구(Men's) 시장 Activity Matrix</span>
+                    </h3>
+                    <div class="relative w-full h-[300px] md:h-[420px] bg-[#090f1e] rounded-xl border border-slate-700 overflow-hidden mb-4">
+                        <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px;"></div>
+                        <div class="absolute top-4 left-4 bg-slate-900/80 px-3 py-2 rounded text-xs font-mono border border-slate-700 z-20">
+                            <div class="flex items-center mb-1"><span class="w-2 h-2 rounded-full bg-rose-500 mr-2"></span>Tier 1 (Market Maker)</div>
+                            <div class="flex items-center mb-1"><span class="w-2 h-2 rounded-full bg-amber-500 mr-2"></span>Tier 2 (High Potential)</div>
+                            <div class="flex items-center"><span class="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>Tier 3 (Emerging/Volume)</div>
+                        </div>
+                        <div id="map-nodes-container" class="absolute inset-0"></div>
+                    </div>
+                    <p class="text-xs text-slate-400 text-center">* 위 지도는 지리적 위치를 기반으로 한 산업 활성도(수익/트래픽)의 추상적 시각화입니다.</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 shadow-xl">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i data-lucide="list-ordered" class="w-5 h-5 mr-2 text-rose-400"></i>
+                        <span id="table-title-text">남자 배구 글로벌 Top 10 마켓</span>
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[800px]">
+                            <thead>
+                                <tr class="border-b border-slate-700 bg-slate-800/50">
+                                    <th class="py-3 px-4 text-slate-300 font-medium rounded-tl-lg w-16 text-center">Rank</th>
+                                    <th class="py-3 px-4 text-slate-300 font-medium">국가 (Country)</th>
+                                    <th class="py-3 px-4 text-slate-300 font-medium text-center">자본력(시장)</th>
+                                    <th class="py-3 px-4 text-slate-300 font-medium text-center">팬덤(볼륨)</th>
+                                    <th class="py-3 px-4 text-slate-300 font-medium rounded-tr-lg">시장 특성 및 게임 연계성</th>
+                                </tr>
+                            </thead>
+                            <tbody id="market-table-body"></tbody>
                         </table>
                     </div>
                 </div>
@@ -728,12 +799,115 @@
                     section.classList.toggle('active', section.id === targetId);
                 });
                 document.querySelector('main').scrollTop = 0;
+                if (targetId === 'market-map' && document.getElementById('market-table-body').innerHTML.trim() === '') {
+                    switchLeague('mens');
+                }
             });
         });
 
         if (window.innerWidth < 768) {
             document.querySelector('.nav-active').classList.add('border-blue-500', 'text-blue-400');
         }
+
+        // ==========================================
+        // Market Map Logic
+        // ==========================================
+        const marketData = {
+            mens: {
+                title: "남자 배구(Men's) 시장 Activity Matrix",
+                tableTitle: "남자 배구 글로벌 Top 10 마켓",
+                nodes: [
+                    { top: '36%', left: '18%', label: '미국 (NCAA/VNL)', cls: 'bg-amber-500' },
+                    { top: '74%', left: '29%', label: '브라질 (Superliga)', cls: 'bg-rose-500', big: true, pulse: true },
+                    { top: '83%', left: '24%', label: '아르헨티나', cls: 'bg-blue-500' },
+                    { top: '16%', left: '52%', label: '폴란드/이탈리아', cls: 'bg-rose-500', big: true, cluster: true, pulse: true },
+                    { top: '32%', left: '43%', label: '프랑스', cls: 'bg-amber-500' },
+                    { top: '52%', left: '67%', label: '이란', cls: 'bg-amber-500' },
+                    { top: '30%', left: '87%', label: '일본 / 한국', cls: 'bg-amber-500', cluster: true }
+                ],
+                rows: [
+                    { rank: 1, country: '🇵🇱 폴란드', cap: 'S', vol: 'S', desc: "배구가 사실상 '국기(National Sport)'. <strong>세계에서 가장 열성적인 관중 동원력(PlusLiga)</strong> 보유." },
+                    { rank: 2, country: '🇮🇹 이탈리아', cap: 'S', vol: 'A', desc: "세계 배구의 NBA라 불리는 <strong>슈퍼레가(SuperLega)</strong> 보유. 최고 자본력의 남자 배구 중심지." },
+                    { rank: 3, country: '🇧🇷 브라질', cap: 'S', vol: 'S', desc: "남미 대륙 트래픽의 핵심. <strong>열광적인 팬덤과 높은 경기 수준을 동시 보유</strong>." },
+                    { rank: 4, country: '🇯🇵 일본', cap: 'A', vol: 'S', desc: "SV.League 개편 및 '하이큐' 시너지. <strong>캐릭터 굿즈(가챠) BM 소화력이 가장 높은 국가</strong>." },
+                    { rank: 5, country: '🇫🇷 프랑스', cap: 'A', vol: 'B', desc: "올림픽 2연패 이후 산업 확장. <strong>유럽 내 3위권 자본력 시장으로 발돋움</strong>." },
+                    { rank: 6, country: '🇺🇸 미국', cap: 'A', vol: 'B', desc: "NCAA(대학배구) 기반 인프라 탄탄. <strong>국가대표 및 풀뿌리 배구 트래픽이 거대함</strong>." },
+                    { rank: 7, country: '🇮🇷 이란', cap: 'B', vol: 'S', desc: "아시아/중동 배구 강국. 국가대표 경기에 <strong>수만 명이 운집하는 폭발적 자국 팬덤</strong>." },
+                    { rank: 8, country: '🇦🇷 아르헨티나', cap: 'B', vol: 'A', desc: "브라질과 함께 남미 배구 양대 산맥. 탄탄한 선수층과 팬덤 유지." },
+                    { rank: 9, country: '🇸🇮 슬로베니아', cap: 'B', vol: 'B', desc: "유럽 신흥 강호. 인구 대비 <strong>압도적인 배구 관여도</strong> 기록 중." },
+                    { rank: 10, country: '🇰🇷 대한민국', cap: 'C', vol: 'A', desc: "V-리그 운영. 글로벌 트래픽은 낮으나 <strong>국내 한정 안정적 시청률 및 과금력</strong> 방어." }
+                ]
+            },
+            womens: {
+                title: "여자 배구(Women's) 시장 Activity Matrix",
+                tableTitle: "여자 배구 글로벌 Top 10 마켓",
+                nodes: [
+                    { top: '32%', left: '18%', label: '미국 (PVF/LOVB)', cls: 'bg-rose-500', big: true, pulse: true },
+                    { top: '74%', left: '29%', label: '브라질 (Superliga)', cls: 'bg-rose-500', big: true, pulse: true },
+                    { top: '16%', left: '46%', label: '이탈리아', cls: 'bg-rose-500' },
+                    { top: '28%', left: '55%', label: '세르비아', cls: 'bg-amber-500' },
+                    { top: '42%', left: '61%', label: '튀르키예 (Sultanlar Ligi)', cls: 'bg-rose-500', big: true, cluster: true, pulse: true },
+                    { top: '40%', left: '79%', label: '중국', cls: 'bg-amber-500' },
+                    { top: '24%', left: '88%', label: '일본 / 한국', cls: 'bg-amber-500', cluster: true },
+                    { top: '67%', left: '81%', label: '인도네시아 / 태국', cls: 'bg-blue-500', cluster: true, pulse: true }
+                ],
+                rows: [
+                    { rank: 1, country: '🇹🇷 튀르키예', cap: 'S', vol: 'S', desc: "여자 배구의 챔피언스리그. <strong>유럽 내 미디어 중계권 및 스폰서십 최상위(최대 자본)</strong>." },
+                    { rank: 2, country: '🇮🇹 이탈리아', cap: 'S', vol: 'S', desc: "튀르키예와 양대 산맥. 세계 최고 수준의 대우와 전통적인 배구 강국." },
+                    { rank: 3, country: '🇧🇷 브라질', cap: 'S', vol: 'S', desc: "전통의 강호. <strong>선수들의 소셜 미디어 팔로워 수가 수백만 명에 달하는 인플루언서 시장</strong>." },
+                    { rank: 4, country: '🇺🇸 미국', cap: 'A', vol: 'S', desc: "최근 프로리그(LOVB, PVF) 연달아 신설. <strong>막대한 자본이 유입되며 폭발적으로 성장 중</strong>." },
+                    { rank: 5, country: '🇯🇵 일본', cap: 'A', vol: 'S', desc: "아시아 최고 인프라. 국가대표팀의 인기가 아이돌급이며 <strong>여성 팬덤 소비력이 막강함</strong>." },
+                    { rank: 6, country: '🇵🇱 폴란드', cap: 'A', vol: 'A', desc: "남자 배구 못지않은 거대한 인기. 국가적 차원의 인프라 투자 지속." },
+                    { rank: 7, country: '🇨🇳 중국', cap: 'A', vol: 'A', desc: "국가적 지원 바탕. 글로벌 확장성은 낮으나 <strong>막대한 내수 트래픽 자체로 거대 시장 형성</strong>." },
+                    { rank: 8, country: '🇷🇸 세르비아', cap: 'B', vol: 'A', desc: "세계 최고 선수(보스코비치 등) 배출. 유럽 내 탄탄한 팬덤 유지." },
+                    { rank: 9, country: '🇰🇷 대한민국', cap: 'B', vol: 'A', desc: "V-리그 인기 견인. <strong>여성 팬층의 높은 관여도로 모바일 게임 BM 타겟에 적합</strong>." },
+                    { rank: 10, country: '🇹🇭 태국/🇮🇩 인니', cap: 'C', vol: 'S', desc: "아시아 내 배구 열풍 주도. <strong>모바일/소셜 트래픽 관여도는 전 세계 1위 수준</strong>." }
+                ]
+            }
+        };
+
+        function getTierBadge(t) {
+            const map = { S: 'text-rose-300 bg-rose-500/20', A: 'text-amber-300 bg-amber-500/20', B: 'text-emerald-300 bg-emerald-500/20', C: 'text-blue-300 bg-blue-500/20' };
+            return map[t] || map['C'];
+        }
+
+        function switchLeague(type) {
+            document.getElementById('btn-mens').className = `px-6 py-2 rounded-lg text-sm font-bold transition-all ${type === 'mens' ? 'bg-rose-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}`;
+            document.getElementById('btn-womens').className = `px-6 py-2 rounded-lg text-sm font-bold transition-all ${type === 'womens' ? 'bg-rose-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}`;
+
+            const data = marketData[type];
+            document.getElementById('map-title-text').innerText = data.title;
+            document.getElementById('table-title-text').innerText = data.tableTitle;
+
+            // Render nodes
+            const container = document.getElementById('map-nodes-container');
+            container.innerHTML = '';
+            data.nodes.forEach(n => {
+                const size = n.big ? 'w-6 h-6' : 'w-4 h-4';
+                const glow = n.big ? 'shadow-[0_0_14px_rgba(244,63,94,0.7)]' : '';
+                const pulseDiv = n.pulse ? `<div class="pulse-ring ${n.cls}/40"></div>` : '';
+                let dotsHtml = n.cluster
+                    ? `<div class="relative"><div class="${size} ${n.cls} rounded-full ${glow} relative z-10"></div>${pulseDiv}<div class="w-3 h-3 bg-amber-500 rounded-full absolute -bottom-1.5 -right-1.5 z-10"></div></div>`
+                    : `<div class="relative"><div class="${size} ${n.cls} rounded-full ${glow} relative z-10"></div>${pulseDiv}</div>`;
+                container.innerHTML += `<div class="map-node" style="top:${n.top};left:${n.left}">${dotsHtml}<span class="mt-2 text-[10px] font-bold text-white bg-slate-900/80 px-2 py-0.5 rounded border border-slate-700 whitespace-nowrap">${n.label}</span></div>`;
+            });
+
+            // Render table
+            const tbody = document.getElementById('market-table-body');
+            tbody.innerHTML = '';
+            data.rows.forEach(row => {
+                const rankCls = row.rank === 1 ? 'text-rose-400 text-xl' : row.rank <= 3 ? 'text-amber-400 text-xl' : 'text-slate-400';
+                tbody.innerHTML += `<tr class="border-b border-slate-800 hover:bg-slate-800/30 transition-colors">
+                    <td class="py-3 px-4 font-black ${rankCls} text-center">${row.rank}</td>
+                    <td class="py-3 px-4 font-bold text-lg text-white">${row.country}</td>
+                    <td class="py-3 px-4 text-center"><span class="px-2 py-0.5 rounded font-bold ${getTierBadge(row.cap)}">${row.cap}</span></td>
+                    <td class="py-3 px-4 text-center"><span class="px-2 py-0.5 rounded font-bold ${getTierBadge(row.vol)}">${row.vol}</span></td>
+                    <td class="py-3 px-4 text-sm text-slate-300">${row.desc}</td>
+                </tr>`;
+            });
+        }
+
+        switchLeague('mens');
 
         // ==========================================
         // AI BM Generator
