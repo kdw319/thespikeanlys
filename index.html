@@ -967,8 +967,15 @@ ROI가 300% 이하면 월정액/소과금 타겟, 500% 이상이면 미끼 상�
                     throw new Error(`GAS 응답 오류: HTTP ${response.status}`);
                 }
 
-                const data = JSON.parse(await response.text());
-                if (data.error) throw new Error(data.error);
+                const raw = await response.text();
+                const data = JSON.parse(raw);
+                if (data.error) {
+                    const msg = typeof data.error === 'object'
+                        ? (data.error.message || JSON.stringify(data.error))
+                        : data.error;
+                    throw new Error(msg);
+                }
+                if (!data.candidates) throw new Error('Gemini 응답 없음: ' + raw.substring(0, 200));
                 const bmIdea = JSON.parse(data.candidates[0].content.parts[0].text);
 
                 document.getElementById('out-total-val').innerText = Math.round(totalValue).toLocaleString() + '원';
